@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0f" />
+  <meta name="description" content="Parker Empire Command Center — manage the build, track money, execute phases." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Parker Empire — Command Center</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%230a0a0f' width='64' height='64'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-size='32' fill='%23c9a227'%3EP%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">P</span>
+        <div>
+          <h1>Parker Empire</h1>
+          <p class="tagline">Command Center · local-first</p>
+        </div>
+      </div>
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-view="dashboard" type="button">Dashboard</button>
+        <button class="tab" data-view="money" type="button">Money</button>
+        <button class="tab" data-view="phases" type="button">Phases</button>
+        <button class="tab" data-view="tasks" type="button">Tasks</button>
+        <button class="tab" data-view="products" type="button">Store</button>
+      </nav>
+    </header>
+
+    <main>
+      <section id="view-dashboard" class="view active">
+        <div class="kpi-row">
+          <article class="kpi">
+            <span class="kpi-label">Revenue logged</span>
+            <span class="kpi-value" id="kpi-revenue">$0</span>
+            <span class="kpi-sub">all time</span>
+          </article>
+          <article class="kpi">
+            <span class="kpi-label">Orders</span>
+            <span class="kpi-value" id="kpi-orders">0</span>
+            <span class="kpi-sub">fulfilled entries</span>
+          </article>
+          <article class="kpi">
+            <span class="kpi-label">Active SKUs</span>
+            <span class="kpi-value" id="kpi-skus">3</span>
+            <span class="kpi-sub">Parker Empire catalog</span>
+          </article>
+          <article class="kpi">
+            <span class="kpi-label">Tasks done</span>
+            <span class="kpi-value" id="kpi-tasks">0/0</span>
+            <span class="kpi-sub">this sprint</span>
+          </article>
+        </div>
+
+        <div class="grid-2">
+          <article class="panel">
+            <h2>Current focus</h2>
+            <p class="focus-line" id="current-focus">MailPilot webhook security — HMAC, replay protection, idempotency, secrets out of scripts.</p>
+            <div class="phase-chip" id="phase-chip">Phase 4 · blocked until 1 & 3</div>
+          </article>
+          <article class="panel">
+            <h2>Quick log sale</h2>
+            <form id="quick-sale" class="form-stack">
+              <label>
+                Product
+                <select id="sale-product" required></select>
+              </label>
+              <label>
+                Amount (USD)
+                <input type="number" id="sale-amount" min="0" step="0.01" required />
+              </label>
+              <label>
+                Note
+                <input type="text" id="sale-note" placeholder="Order #, customer, channel…" />
+              </label>
+              <button type="submit" class="btn primary">Log revenue</button>
+            </form>
+          </article>
+        </div>
+
+        <article class="panel">
+          <h2>Recent activity</h2>
+          <ul class="feed" id="activity-feed"></ul>
+        </article>
+      </section>
+
+      <section id="view-money" class="view">
+        <div class="panel-header">
+          <h2>Revenue ledger</h2>
+          <button type="button" class="btn ghost" id="export-csv">Export CSV</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table" id="ledger-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Product</th>
+                <th>Amount</th>
+                <th>Note</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="hint">Money stays on this device (localStorage). Wire Shopify webhooks later for auto-import.</p>
+      </section>
+
+      <section id="view-phases" class="view">
+        <article class="panel">
+          <h2>Execution Hub phases</h2>
+          <p class="hint">Source of truth: Parker’s Mind — Execution Hub (Drive). Mark status as you verify work.</p>
+          <div class="phase-list" id="phase-list"></div>
+        </article>
+      </section>
+
+      <section id="view-tasks" class="view">
+        <article class="panel">
+          <div class="panel-header">
+            <h2>Task checklist</h2>
+            <button type="button" class="btn primary" id="add-task-btn">+ Task</button>
+          </div>
+          <ul class="task-list" id="task-list"></ul>
+        </article>
+      </section>
+
+      <section id="view-products" class="view">
+        <article class="panel">
+          <h2>Live catalog</h2>
+          <p class="hint">Synced from Shopify store <strong>parkersapps-parkersempire.myshopify.com</strong> · Basic App Development plan · USD</p>
+          <div class="product-grid" id="product-grid"></div>
+        </article>
+        <article class="panel">
+          <h2>Store ops checklist</h2>
+          <ul class="ops-list">
+            <li>Connect custom domain (parkersempire.com / .net / parkersapps.com)</li>
+            <li>MailPilot webhook listener: HMAC + replay + idempotency</li>
+            <li>Digital delivery for licenses / starter pack (email or download link)</li>
+            <li>Support Hour booking flow (calendar or manual)</li>
+            <li>Remove / keep archived snowboard demo products out of storefront</li>
+          </ul>
+        </article>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <span>Parker Empire · Ryan Parker</span>
+      <span id="sync-status">Local only · no cloud required</span>
+    </footer>
+  </div>
+
+  <dialog id="task-dialog">
+    <form method="dialog" id="task-form" class="form-stack">
+      <h3>New task</h3>
+      <label>
+        Title
+        <input type="text" id="task-title" required maxlength="200" />
+      </label>
+      <label>
+        Phase
+        <select id="task-phase">
+          <option value="0">Phase 0 — Governance</option>
+          <option value="1">Phase 1 — Inventory</option>
+          <option value="3">Phase 3 — Mobile infra</option>
+          <option value="4" selected>Phase 4 — MailPilot</option>
+          <option value="5">Phase 5 — Agents</option>
+          <option value="other">Other / money</option>
+        </select>
+      </label>
+      <div class="btn-row">
+        <button type="submit" class="btn primary" value="save">Save</button>
+        <button type="button" class="btn ghost" id="task-cancel">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="js/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>
